@@ -1,26 +1,28 @@
 const express = require("express");
 const scrapearCompuTrabajo = require("./scrapearCompuTrabajo.js");
+const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
-const cors = require("cors");
+
+// Si usas Node < 18, descomenta la siguiente línea
+// const fetch = require("node-fetch");
 
 app.use(cors());
-
 app.use(express.json());
-app.use(express.static("public")); // si tu HTML está ahí
 app.use(express.urlencoded({ extended: true }));
-app.use("/output", express.static("output"));
+
+// Sirve archivos estáticos desde la raíz
 app.use(express.static(__dirname));
+// Sirve archivos de output
+app.use("/output", express.static("output"));
 
 app.post("/buscar", async (req, res) => {
   const { busqueda } = req.body;
-
   if (!busqueda || busqueda.length < 3) {
     return res
       .status(400)
       .json({ error: "La búsqueda debe tener al menos 3 caracteres" });
   }
-
   try {
     const resultados = await scrapearCompuTrabajo(busqueda);
     res.json({ cantidad: resultados.length, trabajos: resultados });
@@ -42,7 +44,7 @@ app.get("/geocode", async (req, res) => {
       )}`,
       {
         headers: {
-          "User-Agent": "TuAppNombre/1.0 (tu-email@ejemplo.com)", // cumple política de Nominatim
+          "User-Agent": "TuAppNombre/1.0 (tu-email@ejemplo.com)",
         },
       }
     );
