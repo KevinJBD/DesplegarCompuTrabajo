@@ -10,6 +10,7 @@ app.use(express.json());
 app.use(express.static("public")); // si tu HTML está ahí
 app.use(express.urlencoded({ extended: true }));
 app.use("/output", express.static("output"));
+app.use(express.static(__dirname));
 
 app.post("/buscar", async (req, res) => {
   const { busqueda } = req.body;
